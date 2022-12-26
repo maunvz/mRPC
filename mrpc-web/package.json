@@ -1,0 +1,19 @@
+{
+  "name": "mrpc-web",
+  "version": "1.0.0",
+  "description": "An RPC wrapper around profobufs that uses websockets and http requests (web)",
+  "main": "build/index.js",
+  "author": "maunvz",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/maunvz/mRPC"
+  },
+  "dependencies": {
+    "protobufjs": "^7.1.2",
+    "socket.io-client": "^4.5.4"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.4"
+  }
+}
