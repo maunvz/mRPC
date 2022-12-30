@@ -1,6 +1,6 @@
 {
   "name": "mrpc-web",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "An RPC wrapper around profobufs that uses websockets and http requests (web)",
   "main": "build/index.js",
   "author": "maunvz",

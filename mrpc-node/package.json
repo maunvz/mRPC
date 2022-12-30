@@ -1,6 +1,6 @@
 {
   "name": "mrpc-node",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "An RPC wrapper around protobufs that uses websockets and http requests (nodejs)",
   "main": "build/index.js",
   "author": "maunvz",

@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "long": "^5.2.1",
-    "mrpc-node": "file:../../mrpc-node",
+    "mrpc-node": "^0.0.1",
     "protobufjs": "^7.1.2"
   },
   "devDependencies": {
