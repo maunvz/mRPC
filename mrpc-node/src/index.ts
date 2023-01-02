@@ -72,20 +72,33 @@ export class RpcClientChannel implements Rpc {
   }
 }
 
+export type RpcServerOptions = {
+  socketServer: SocketServer;
+  http: HttpServer;
+  origin: string;
+  namespace: string;
+}
+
 export class RpcServer {
   socketServer: SocketServer;
   namespace: string;
 
-  constructor(http: HttpServer, origin: string, namespace: string = "") {
-    this.socketServer = new SocketServer(http, {
-      cors: {
-        origin: origin,
-        methods: ["GET", "POST"]
-      },
-      allowEIO3: true,
-    });
+  constructor(options: RpcServerOptions) {
+    if (options.socketServer) {
+      this.socketServer = options.socketServer;
+    } else if (options.http) {
+      this.socketServer = new SocketServer(options.http, {
+        cors: {
+          origin: options.origin,
+          methods: ["GET", "POST"]
+        },
+        allowEIO3: true,
+      });
+    } else {
+      throw new Error("Invalid RpcServerOptions! Missing SocketServer or HttpServer");
+    }
 
-    this.namespace = namespace;
+    this.namespace = options.namespace ? options.namespace : "";
   }
 
   addService<TService>(impl: TService, definition: ServiceDefinition, onConnection: (socket: ServerSocket) => void) {
