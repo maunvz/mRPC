@@ -44,12 +44,15 @@ interface Rpc {
 
 export class RpcClientChannel implements Rpc {
   private socket: ClientSocket;
+  private onConnect: () => Promise<void>;
 
-  // Specify a socket or a host, with an optional namespace
+  // Specify a socket or a host, with an optional namespace. Clients may pass
+  // an onConnect in case on-demand re-connection requires some init step.
   constructor(options: {
     socket?: ClientSocket,
     host?: string,
     namespace?: string,
+    onConnect?: () => Promise<void>,
   }) {
     if (options.socket) {
       this.socket = options.socket;
@@ -59,9 +62,14 @@ export class RpcClientChannel implements Rpc {
       this.socket.connect();
     }
     this.request = this.request.bind(this);
+    this.onConnect = options.onConnect;
   }
 
   async request(service: string, method: string, data: Uint8Array): Promise<Uint8Array> {
+    if (!this.socket.connected) {
+      (this.socket as ClientSocket).connect();
+      await this.onConnect();
+    }
     return genSocketPromise(this.socket, `${service}+${method}`, data);
   }
 
