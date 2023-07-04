@@ -1,7 +1,7 @@
 /* eslint-disable */
 import * as _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "helloworld";
+export const protobufPackage = "com.example.proto";
 
 export interface HelloRequest {
   name: string;
@@ -105,41 +105,6 @@ export const HelloReply = {
   },
 };
 
-export interface Greeter {
-  SayHello(request: HelloRequest): Promise<HelloReply>;
-}
-
-export class GreeterClientImpl implements Greeter {
-  private readonly rpc: Rpc;
-  private readonly service: string;
-  constructor(rpc: Rpc, opts?: { service?: string }) {
-    this.service = opts?.service || "helloworld.Greeter";
-    this.rpc = rpc;
-    this.SayHello = this.SayHello.bind(this);
-  }
-  SayHello(request: HelloRequest): Promise<HelloReply> {
-    const data = HelloRequest.encode(request).finish();
-    const promise = this.rpc.request(this.service, "SayHello", data);
-    return promise.then((data) => HelloReply.decode(new _m0.Reader(data)));
-  }
-}
-
-export type GreeterDefinition = typeof GreeterDefinition;
-export const GreeterDefinition = {
-  name: "Greeter",
-  fullName: "helloworld.Greeter",
-  methods: {
-    sayHello: {
-      name: "SayHello",
-      requestType: HelloRequest,
-      requestStream: false,
-      responseType: HelloReply,
-      responseStream: false,
-      options: {},
-    },
-  },
-} as const;
-
 export interface ClientGreeter {
   SayHello(request: HelloRequest): Promise<HelloReply>;
 }
@@ -148,7 +113,7 @@ export class ClientGreeterClientImpl implements ClientGreeter {
   private readonly rpc: Rpc;
   private readonly service: string;
   constructor(rpc: Rpc, opts?: { service?: string }) {
-    this.service = opts?.service || "helloworld.ClientGreeter";
+    this.service = opts?.service || "com.example.proto.ClientGreeter";
     this.rpc = rpc;
     this.SayHello = this.SayHello.bind(this);
   }
@@ -162,7 +127,42 @@ export class ClientGreeterClientImpl implements ClientGreeter {
 export type ClientGreeterDefinition = typeof ClientGreeterDefinition;
 export const ClientGreeterDefinition = {
   name: "ClientGreeter",
-  fullName: "helloworld.ClientGreeter",
+  fullName: "com.example.proto.ClientGreeter",
+  methods: {
+    sayHello: {
+      name: "SayHello",
+      requestType: HelloRequest,
+      requestStream: false,
+      responseType: HelloReply,
+      responseStream: false,
+      options: {},
+    },
+  },
+} as const;
+
+export interface Greeter {
+  SayHello(request: HelloRequest): Promise<HelloReply>;
+}
+
+export class GreeterClientImpl implements Greeter {
+  private readonly rpc: Rpc;
+  private readonly service: string;
+  constructor(rpc: Rpc, opts?: { service?: string }) {
+    this.service = opts?.service || "com.example.proto.Greeter";
+    this.rpc = rpc;
+    this.SayHello = this.SayHello.bind(this);
+  }
+  SayHello(request: HelloRequest): Promise<HelloReply> {
+    const data = HelloRequest.encode(request).finish();
+    const promise = this.rpc.request(this.service, "SayHello", data);
+    return promise.then((data) => HelloReply.decode(new _m0.Reader(data)));
+  }
+}
+
+export type GreeterDefinition = typeof GreeterDefinition;
+export const GreeterDefinition = {
+  name: "Greeter",
+  fullName: "com.example.proto.Greeter",
   methods: {
     sayHello: {
       name: "SayHello",
