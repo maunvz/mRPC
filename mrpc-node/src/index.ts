@@ -3,7 +3,7 @@ import * as _m0 from "protobufjs/minimal";
 import { Server as HttpServer } from "http";
 import { Socket as ServerSocket, Server as SocketServer } from "socket.io";
 import { io, Socket as ClientSocket } from "socket.io-client";
-import { genSocketPromise, regSocketCb } from "./RpcUtils";
+import { SOCKET_ID_KEY, genSocketPromise, regSocketCb } from "./RpcUtils";
 
 // Example "Definition" output from ts-proto:
 // export const GreeterDefinition = {
@@ -46,7 +46,7 @@ interface Rpc {
 
 export class RpcClientChannel implements Rpc {
   private socket: ClientSocket | ServerSocket;
-  private onConnect: () => Promise<void>;
+  private onConnect?: () => Promise<void>;
 
   // Specify a socket or a host, with an optional namespace. Clients may pass
   // an onConnect in case on-demand re-connection requires some init step.
@@ -70,7 +70,9 @@ export class RpcClientChannel implements Rpc {
   async request(service: string, method: string, data: Uint8Array): Promise<Uint8Array> {
     if (!this.socket.connected) {
       (this.socket as ClientSocket).connect();
-      await this.onConnect();
+      if (this.onConnect) {
+        await this.onConnect();
+      }
     }
     return genSocketPromise(this.socket, `${service}+${method}`, data);
   }
@@ -81,8 +83,7 @@ export class RpcClientChannel implements Rpc {
 }
 
 export type RpcServerOptions = {
-  socketServer: SocketServer;
-  http: HttpServer;
+  server: SocketServer | HttpServer;
   origin: string;
   namespace: string;
 }
@@ -92,18 +93,16 @@ export class RpcServer {
   namespace: string;
 
   constructor(options: RpcServerOptions) {
-    if (options.socketServer) {
-      this.socketServer = options.socketServer;
-    } else if (options.http) {
-      this.socketServer = new SocketServer(options.http, {
+    if (options.server instanceof SocketServer) {
+      this.socketServer = options.server;
+    } else {
+      this.socketServer = new SocketServer(options.server, {
         cors: {
           origin: options.origin,
           methods: ["GET", "POST"]
         },
         allowEIO3: true,
       });
-    } else {
-      throw new Error("Invalid RpcServerOptions! Missing SocketServer or HttpServer");
     }
 
     this.namespace = options.namespace ? options.namespace : "";
@@ -137,4 +136,8 @@ export function wrapSocket<TDefinition>(
       (res) => method.responseType.encode(res, _m0.Writer.create()).finish(),
       ((impl as any)[method.name] as any).bind(impl));
   }
+}
+
+export function getSocketId<Type>(arg: Type) {
+  return (arg as any)[SOCKET_ID_KEY];
 }

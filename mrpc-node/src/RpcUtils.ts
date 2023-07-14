@@ -1,6 +1,8 @@
 import { Socket as ClientSocket } from "socket.io-client";
 import { Socket as ServerSocket } from 'socket.io';
 
+export const SOCKET_ID_KEY = "mrcp_reserved_socket_id";
+
 // Debug options"
 // - Set DBG_VERBOSE_RPC to 1 to print all RPC requests and replies
 const verbose = parseInt(process.env.DBG_VERBOSE_RPC || "") === 1;
@@ -57,7 +59,9 @@ export function regSocketCb<Type, Ret>(
     if (isNaN(delay) && verboseFuzz) console.log(`Executing ${name} (after ${delay}ms)!`);
     // Decode the Request type
     const data = new Uint8Array(dataConvert);
-    let ret = await func(decodeRequest(data));
+    let arg = decodeRequest(data);
+    (arg as any)[SOCKET_ID_KEY] = socket.id;
+    let ret = await func(arg);
     if (isNaN(delay) && verboseFuzz) console.log(`Done with ${name}!`);
     if (verbose) console.log(`Replying to ${name} with size ${JSON.stringify(ret).length} for socket ${socket.id}`);
     cb(encodeResponse(ret));

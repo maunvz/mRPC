@@ -1,5 +1,5 @@
 import { createServer } from "http";
-import { RpcClientChannel, RpcServer } from "mrpc-node";
+import { RpcClientChannel, RpcServer, getSocketId } from "mrpc-node";
 import {
   ClientGreeterClientImpl,
   Greeter,
@@ -15,6 +15,7 @@ const PORT = parseInt(process.env.PORT || "8080") || 8080;
 
 class GreeterServiceImpl implements Greeter {
   async SayHello(request: HelloRequest): Promise<HelloReply> {
+    console.log("Called from socket id: ", getSocketId(request));
     return {
       message: "Hello " + request.name,
     }
@@ -22,7 +23,11 @@ class GreeterServiceImpl implements Greeter {
 }
 
 const httpServer = createServer();
-const rpcServer = new RpcServer(httpServer, ORIGIN);
+const rpcServer = new RpcServer({
+  namespace: "",
+  origin: ORIGIN,
+  server: httpServer
+});
 rpcServer.addService<Greeter>(new GreeterServiceImpl(), GreeterDefinition,
     async (socket) => {
       const channel = new RpcClientChannel({socket});

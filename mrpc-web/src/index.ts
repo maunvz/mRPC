@@ -1,7 +1,7 @@
 import * as _m0 from "protobufjs/minimal";
 
 import { io, Socket as ClientSocket } from "socket.io-client";
-import { genSocketPromise, regSocketCb } from "./RpcUtils";
+import { SOCKET_ID_KEY, genSocketPromise, regSocketCb } from "./RpcUtils";
 
 // Example "Definition" output from ts-proto:
 // export const GreeterDefinition = {
@@ -44,7 +44,7 @@ interface Rpc {
 
 export class RpcClientChannel implements Rpc {
   private socket: ClientSocket;
-  private onConnect: () => Promise<void>;
+  private onConnect?: () => Promise<void>;
 
   // Specify a socket or a host, with an optional namespace. Clients may pass
   // an onConnect in case on-demand re-connection requires some init step.
@@ -68,7 +68,9 @@ export class RpcClientChannel implements Rpc {
   async request(service: string, method: string, data: Uint8Array): Promise<Uint8Array> {
     if (!this.socket.connected) {
       (this.socket as ClientSocket).connect();
-      await this.onConnect();
+      if (this.onConnect) {
+        await this.onConnect();
+      }
     }
     return genSocketPromise(this.socket, `${service}+${method}`, data);
   }
@@ -88,4 +90,8 @@ export function wrapSocket<TDefinition>(impl: TDefinition, socket: ClientSocket,
       (res) => method.responseType.encode(res, _m0.Writer.create()).finish(),
       ((impl as any)[method.name] as any).bind(impl));
   }
+}
+
+export function getSocketId<Type>(arg: Type) {
+  return (arg as any)[SOCKET_ID_KEY];
 }
