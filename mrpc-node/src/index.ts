@@ -69,9 +69,13 @@ export class RpcClientChannel implements Rpc {
 
   async request(service: string, method: string, data: Uint8Array): Promise<Uint8Array> {
     if (!this.socket.connected) {
-      (this.socket as ClientSocket).connect();
-      if (this.onConnect) {
-        await this.onConnect();
+      if (this.socket instanceof ClientSocket) {
+        (this.socket as ClientSocket).connect();
+        if (this.onConnect) {
+          await this.onConnect();
+        }
+      } else {
+        throw new Error("Client not connected!");
       }
     }
     return genSocketPromise(this.socket, `${service}+${method}`, data);
