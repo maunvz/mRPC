@@ -1,0 +1,45 @@
+# lsqpack
+lsqpack_env = Environment(
+    CPPPATH = [
+      'uWebSockets/uSockets/lsquic/src/liblsquic/ls-qpack/deps/xxhash/',
+    ]
+)
+lsqpack_env.StaticLibrary('lsqpack', Glob(
+  "uWebSockets/uSockets/lsquic/src/liblsquic/ls-qpack/lsqpack.c",
+))
+
+# lsquic
+lsquic_env = Environment(
+    CPPPATH = [
+      'uWebSockets/uSockets/lsquic/include',
+      'uWebSockets/uSockets/lsquic/src/lshpack/',
+      'uWebSockets/uSockets/lsquic/src/liblsquic/ls-qpack/',
+      'uWebSockets/uSockets/boringssl/include/',
+    ]
+)
+lsquic_env.StaticLibrary('lsquic',
+  Glob(
+  "uWebSockets/uSockets/lsquic/src/liblsquic/*.c",
+  exclude=[
+    "uWebSockets/uSockets/lsquic/src/liblsquic/common_cert_set_2.c",
+    "uWebSockets/uSockets/lsquic/src/liblsquic/common_cert_set_3.c",
+  ]),
+  LIBS=["lsqpack"],
+)
+
+# uSockets (dependencies above)
+uSockets_env = Environment(
+    CPPPATH = [
+      'uWebSockets/uSockets/src/',
+    ]
+)
+uSockets_env.StaticLibrary(
+  'uSockets',
+  [
+    Glob("uWebSockets/uSockets/src/*.c"),
+    Glob("uWebSockets/uSockets/src/*/*.c"),
+  ],
+  CPPDEFINES=["LIBUS_NO_SSL"],
+  LIBS=["lsquic"],
+  LIBPATH='.'
+)

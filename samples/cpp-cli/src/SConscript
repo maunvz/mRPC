@@ -1,1 +1,16 @@
-Program("mrpc-client", Glob("*.cpp"))
+# Import libs config
+SConscript('libs/SConscript')
+
+# uWebSockets includes
+env = Environment(
+    CPPPATH = [
+      'libs/uWebSockets/src',
+      'libs/uWebSockets/uSockets/src',
+    ]
+)
+env.Program(
+    "mrpc-client",
+    Glob("*.cpp"),
+    LIBS=["protobuf", "uSockets", "lsquic", "z"],
+    LIBPATH='./libs/'
+)
