@@ -19,10 +19,14 @@ repositories {
 dependencies {
     implementation("com.google.protobuf:protobuf-java:3.0.0")
     implementation("io.socket:socket.io-client:2.1.0")
+    implementation("io.socket:socket.io-server:4.0.1")
 
     // This dependency is used by the application.
     implementation("com.google.guava:guava:31.1-jre")
     implementation(files("libs/mrpc-java.jar"))
+    implementation("javax.servlet:javax.servlet-api:3.0.1")
+    implementation("org.eclipse.jetty:jetty-server:10.0.18")
+    implementation("org.eclipse.jetty:jetty-servlet:10.0.18")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -34,7 +38,7 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass.set("com.example.javacli.Client")
+    mainClass.set("com.example.javacli.ServerApp")
 }
 
 protobuf {

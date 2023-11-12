@@ -15,7 +15,7 @@ const client = new GreeterClientImpl(channel);
 class ClientGreeterServiceImpl implements ClientGreeter {
   async SayHello(request: HelloRequest): Promise<HelloReply> {
     return {
-      message: "Hello from client " + request.name,
+      message: "Hello " + request.name + " from Node-CLI Client",
     }
   }
 }
@@ -27,7 +27,7 @@ wrapSocket<ClientGreeter>(
 // Make a call to the server
 (async () => {
   const res = await client.SayHello({
-    name: "Alice",
+    name: "Node-CLI Client",
   });
   console.log("Got reply: ", res);
 })();

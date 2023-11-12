@@ -30,6 +30,12 @@ dependencies {
         // excluding org.json which is provided by Android
         exclude("org.json", "json")
     }
+
+    // Used by the server mrpc implementation
+    implementation("io.socket:socket.io-server:4.0.1")
+    implementation("javax.servlet:javax.servlet-api:3.0.1")
+    implementation("org.eclipse.jetty:jetty-server:10.0.18")
+    implementation("org.eclipse.jetty:jetty-servlet:10.0.18")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.

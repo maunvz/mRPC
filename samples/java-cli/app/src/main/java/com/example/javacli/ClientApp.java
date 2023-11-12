@@ -21,8 +21,8 @@ import java.util.logging.Logger;
 
 import com.nvz.mrpc.RpcUtils;
 
-public class Client {
-    private static Logger logger = Logger.getLogger("Sample");
+public class ClientApp {
+    private static Logger logger = Logger.getLogger("Client");
     private static RpcChannel channel;
     private static Socket socket;
     private static Greeter greeter;
@@ -30,11 +30,18 @@ public class Client {
     public static void main(String[] args) {
         URI uri = URI.create("http://localhost:8080");
         IO.Options options = IO.Options.builder()
+                .setUpgrade(false)
                 .build();
         socket = IO.socket(uri, options);
         channel = RpcUtils.makeChannel(socket);
         socket.on(Socket.EVENT_CONNECT, (res) -> {
             logger.log(Level.INFO, "Connect success");
+        });
+        socket.on(Socket.EVENT_DISCONNECT, (res) -> {
+            logger.log(Level.WARNING, "Disconnect");
+        });
+        socket.on(Socket.EVENT_CONNECT_ERROR, (res) -> {
+            logger.log(Level.WARNING, "Connect error ", res);
         });
 
         // So we can respond to calls from the server

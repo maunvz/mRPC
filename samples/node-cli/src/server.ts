@@ -17,7 +17,7 @@ class GreeterServiceImpl implements Greeter {
   async SayHello(request: HelloRequest): Promise<HelloReply> {
     console.log("Called from socket id: ", getSocketId(request));
     return {
-      message: "Hello " + request.name,
+      message: "Hello " + request.name + " from Node-CLI Server",
     }
   }
 }
@@ -33,7 +33,7 @@ rpcServer.addService<Greeter>(new GreeterServiceImpl(), GreeterDefinition,
       const channel = new RpcClientChannel({socket});
       const client = new ClientGreeterClientImpl(channel);
       const res = await client.SayHello({
-        name: "Bob"
+        name: "Node-CLI Server"
       });
       console.log("Got reply:", res);
     });
