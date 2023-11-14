@@ -17,7 +17,7 @@ repositories {
 
 dependencies {
     // mRPC Java
-    implementation("com.google.protobuf:protobuf-java:3.0.0")
+    implementation("com.google.protobuf:protobuf-java:3.25.0")
     implementation("io.socket:socket.io-client:2.1.0") {
         // excluding org.json which is provided by Android
         exclude("org.json", "json")

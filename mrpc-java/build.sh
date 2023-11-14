@@ -8,7 +8,7 @@ JAVA_CLI_PATH="$HOME/git/mRPC/samples/java-cli/"
 
 # First build engine.io
 cd $ENGINEIO_PATH
-mvn package
+mvn package -DskipTests
 
 # Copy into mrpc and sample
 mkdir -p $MRPC_JAVA_PATH/lib/libs/

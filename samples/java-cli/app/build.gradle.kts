@@ -21,7 +21,7 @@ dependencies {
     implementation(files("libs/mrpc-java.jar"))
 
     // mRPC Java dependencies
-    implementation("com.google.protobuf:protobuf-java:3.0.0")
+    implementation("com.google.protobuf:protobuf-java:3.25.0")
     implementation("io.socket:socket.io-client:2.1.0")
     implementation("io.socket:socket.io-server:4.1.2")
     implementation("jakarta.servlet:jakarta.servlet-api:6.0.0")
@@ -44,6 +44,7 @@ application {
 protobuf {
     protoc {
         artifact = "com.google.protobuf:protoc:3.0.0"
+        path = "/opt/homebrew/bin/protoc"
     }
     generateProtoTasks {
         ofSourceSet("main").forEach {
