@@ -16,26 +16,16 @@ repositories {
 }
 
 dependencies {
-    // Use JUnit test framework.
-    testImplementation("junit:junit:4.13.2")
-
-    // This dependency is exported to consumers, that is to say found on their compile classpath.
-    api("org.apache.commons:commons-math3:3.6.1")
-
-    // This dependency is used internally, and not exposed to consumers on their own compile classpath.
-    implementation("com.google.guava:guava:31.1-jre")
-
+    // mRPC Java
     implementation("com.google.protobuf:protobuf-java:3.0.0")
     implementation("io.socket:socket.io-client:2.1.0") {
         // excluding org.json which is provided by Android
         exclude("org.json", "json")
     }
-
-    // Used by the server mrpc implementation
-    implementation("io.socket:socket.io-server:4.0.1")
-    implementation("javax.servlet:javax.servlet-api:3.0.1")
-    implementation("org.eclipse.jetty:jetty-server:10.0.18")
-    implementation("org.eclipse.jetty:jetty-servlet:10.0.18")
+    implementation("io.socket:socket.io-server:4.1.2")
+    implementation("jakarta.servlet:jakarta.servlet-api:6.0.0")
+    implementation("org.eclipse.jetty:jetty-server:11.0.18")
+    implementation("org.eclipse.jetty:jetty-servlet:11.0.18")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.

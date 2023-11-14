@@ -10,10 +10,13 @@ import com.google.protobuf.RpcController;
 import com.google.protobuf.Service;
 import com.nvz.mrpc.RpcUtils;
 
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import io.socket.socketio.server.SocketIoSocket;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class ServerApp {
     private static final Logger logger = Logger.getLogger("Server");
@@ -59,6 +62,11 @@ public class ServerApp {
             } catch (Exception e) {
                 logger.log(Level.INFO, "Something bad happened", e);
             }
+        }
+
+        @Override
+        protected void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
+            super.service(request, response);
         }
     }
 }

@@ -19,13 +19,12 @@ import io.socket.engineio.server.EngineIoServerOptions;
 import io.socket.socketio.server.SocketIoNamespace;
 import io.socket.socketio.server.SocketIoServer;
 import io.socket.socketio.server.SocketIoSocket;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletHandler;
-
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 public class RpcUtils {
     private static final String TAG = "RpcUtils";
@@ -197,7 +196,7 @@ public class RpcUtils {
         }
 
         @Override
-        protected final void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        protected void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
             if (!initCalledSuper) {
                 throw new RuntimeException("init() override didn't call super.init()!");
             }
