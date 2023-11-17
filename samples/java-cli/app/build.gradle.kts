@@ -23,7 +23,12 @@ dependencies {
     // mRPC Java dependencies
     implementation("com.google.protobuf:protobuf-java:3.25.0")
     implementation("io.socket:socket.io-client:2.1.0")
-    implementation("io.socket:socket.io-server:4.1.2")
+    // Override to fix a decoder bug, remove when upstreamed / published.
+    // Applies https://github.com/socketio/engine.io-server-java/pull/66
+    implementation(files("libs/engine.io-server-6.3.2.jar"))
+    implementation("io.socket:socket.io-server:4.1.2") {
+        exclude("io.socket", "engine.io-server")
+    }
     implementation("jakarta.servlet:jakarta.servlet-api:6.0.0")
     implementation("org.eclipse.jetty:jetty-server:11.0.18")
     implementation("org.eclipse.jetty:jetty-servlet:11.0.18")
