@@ -2,4 +2,4 @@ build
 local.properties
 .idea
 .gradle
-engine.io-server-6.3.2.jar
+*.jar

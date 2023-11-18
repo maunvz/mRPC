@@ -1,8 +1,25 @@
 # Ensure tools are set
 if [ -z ${JAVA_HOME+x} ]; then echo "JAVA_HOME is unset"; exit 1; fi
 
-OLD_PATH="$(pwd)"
 ENGINEIO_PATH="$HOME/git/engine.io-server-java/"
+
+# Ensure dependencies exist
+if [ -d $ENGINEIO_PATH ]
+then
+    echo "Directory $ENGINEIO_PATH already exists!"
+else
+    echo "Directory $ENGINEIO_PATH doesn't exist, bailing!"
+    exit 1
+fi
+
+# Ensure build tool exists
+if ! command -v mvn &> /dev/null
+then
+    echo "mvn could not be found"
+    exit 1
+fi
+
+OLD_PATH="$(pwd)"
 MRPC_JAVA_PATH="$HOME/git/mRPC/mrpc-java/"
 JAVA_CLI_PATH="$HOME/git/mRPC/samples/java-cli/"
 

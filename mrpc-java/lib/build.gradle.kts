@@ -18,12 +18,8 @@ repositories {
 dependencies {
     // mRPC Java
     implementation("com.google.protobuf:protobuf-java:3.25.0")
-    implementation("io.socket:socket.io-client:2.1.0") {
-        // excluding org.json which is provided by Android
-        exclude("org.json", "json")
-    }
+    implementation("io.socket:socket.io-client:2.1.0")
     implementation("io.socket:socket.io-server:4.1.2")
-    implementation("jakarta.servlet:jakarta.servlet-api:6.0.0")
     implementation("org.eclipse.jetty:jetty-server:11.0.18")
     implementation("org.eclipse.jetty:jetty-servlet:11.0.18")
 }
