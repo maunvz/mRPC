@@ -30,6 +30,12 @@ public class RpcUtils {
     private static final String TAG = "RpcUtils";
     private static final Logger logger = Logger.getLogger(TAG);
 
+    // Not thread safe, must be called within a locked context
+    private static String latestSocketId = "";
+    public static String getCurrentSocketIdLocked() {
+        return latestSocketId;
+    }
+
     private static final RpcController controller = new RpcController() {
         @Override
         public void reset() {
@@ -78,9 +84,13 @@ public class RpcUtils {
                     Class<?> clazz = Class.forName(method.getInputType().getFullName());
                     Method parseMethod = clazz.getDeclaredMethod("parseFrom", byte[].class);
                     Message request = (Message) parseMethod.invoke(null, (byte[]) args[0]);
-                    impl.callMethod(method, controller, request, (response) -> {
-                        ((Ack) args[1]).call(response.toByteArray());
-                    });
+                    synchronized(impl) {
+                        latestSocketId = socket.id();
+                        impl.callMethod(method, controller, request, (response) -> {
+                            ((Ack) args[1]).call(response.toByteArray());
+                        });
+                        latestSocketId = "";
+                    }
                 } catch (Exception e) {
                     logger.log(Level.WARNING, "Failed to parse", e);
                 }
@@ -96,9 +106,13 @@ public class RpcUtils {
                     Class<?> clazz = Class.forName(method.getInputType().getFullName());
                     Method parseMethod = clazz.getDeclaredMethod("parseFrom", byte[].class);
                     Message request = (Message) parseMethod.invoke(null, (byte[]) args[0]);
-                    impl.callMethod(method, controller, request, (response) -> {
-                        ((SocketIoSocket.ReceivedByLocalAcknowledgementCallback) args[1]).sendAcknowledgement(response.toByteArray());
-                    });
+                    synchronized (impl) {
+                        latestSocketId = socket.getId();
+                        impl.callMethod(method, controller, request, (response) -> {
+                            ((SocketIoSocket.ReceivedByLocalAcknowledgementCallback) args[1]).sendAcknowledgement(response.toByteArray());
+                        });
+                        latestSocketId = "";
+                    }
                 } catch (Exception e) {
                     logger.log(Level.WARNING, "Failed to parse", e);
                 }
@@ -164,6 +178,14 @@ public class RpcUtils {
         public void join() {
             try {
                 server.join();
+            } catch (Exception e) {
+                logger.log(Level.WARNING, "Error joining server: ", e);
+            }
+        }
+
+        public void stop() {
+            try {
+                server.stop();
             } catch (Exception e) {
                 logger.log(Level.WARNING, "Error joining server: ", e);
             }
