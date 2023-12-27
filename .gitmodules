@@ -1,0 +1,3 @@
+[submodule "modules/engine.io-server-java"]
+	path = modules/engine.io-server-java
+	url = https://github.com/maunvz/engine.io-server-java.git
